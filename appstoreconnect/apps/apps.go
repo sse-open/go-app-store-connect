@@ -6,7 +6,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/common"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/included"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/resource/apps"
-	"github.com/sse-open/go-app-store-connect/client"
+	"github.com/sse-open/go-app-store-connect/client/response"
 )
 
 // A response that contains a list of Apps resources.
@@ -79,7 +79,7 @@ type ListAppsQuery struct {
 // List available apps
 //
 // https://developer.apple.com/documentation/appstoreconnectapi/get-v1-apps
-func (as *AppsService) ListApps(ctx context.Context, queryParams *ListAppsQuery) (*AppsResponse, *client.ClientResponse, error) {
+func (as *AppsService) ListApps(ctx context.Context, queryParams *ListAppsQuery) (*AppsResponse, *response.ClientResponse, error) {
 	res := new(AppsResponse)
 	resp, err := as.client.Get(ctx, "v1/apps", queryParams, res)
 	if err != nil {

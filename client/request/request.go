@@ -1,4 +1,4 @@
-package client
+package request
 
 type AppStoreConnectRequestPayload struct {
 	Data     interface{} `json:"data"`

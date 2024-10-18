@@ -17,12 +17,7 @@ func (r URI) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.String())
 }
 
-func (r *URI) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
-		return err
-	}
-
+func (r *URI) parseURI(s string) error {
 	u, err := url.Parse(s)
 	if err != nil {
 		return err
@@ -33,4 +28,13 @@ func (r *URI) UnmarshalJSON(b []byte) error {
 	}
 
 	return nil
+}
+
+func (r *URI) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+
+	return r.parseURI(s)
 }

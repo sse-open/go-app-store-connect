@@ -7,7 +7,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/common"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/included"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/resource/inapppurchase"
-	"github.com/sse-open/go-app-store-connect/client"
+	"github.com/sse-open/go-app-store-connect/client/response"
 )
 
 // A response that contains a list of InAppPurchasesV2 resources for an app.
@@ -44,7 +44,7 @@ type ListAppInAppPurchasesQuery struct {
 	Cursor                                       string `url:"cursor,omitempty"`
 }
 
-func (iaps *InAppPurchaseService) ListAppInAppPurchases(ctx context.Context, appID string, queryParams *ListAppInAppPurchasesQuery) (*InAppPurchasesV2Response, *client.ClientResponse, error) {
+func (iaps *InAppPurchaseService) ListAppInAppPurchases(ctx context.Context, appID string, queryParams *ListAppInAppPurchasesQuery) (*InAppPurchasesV2Response, *response.ClientResponse, error) {
 	url := fmt.Sprintf("v1/apps/%s/inAppPurchasesV2", appID)
 	respPayload := &InAppPurchasesV2Response{}
 	resp, err := iaps.client.Get(ctx, url, queryParams, respPayload)

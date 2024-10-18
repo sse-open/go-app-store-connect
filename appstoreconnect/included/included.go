@@ -13,7 +13,7 @@ type ErrUnsupportedIncludedType struct {
 }
 
 func (e ErrUnsupportedIncludedType) Error() string {
-	return fmt.Sprintf("unsupported included type %s", e.Type)
+	return fmt.Sprintf("unsupported included type: %s", e.Type)
 }
 
 type Included struct {

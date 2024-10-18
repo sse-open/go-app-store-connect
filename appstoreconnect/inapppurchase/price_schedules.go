@@ -8,7 +8,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/included"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/resource/inapppurchase"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/resource/territories"
-	"github.com/sse-open/go-app-store-connect/client"
+	"github.com/sse-open/go-app-store-connect/client/response"
 )
 
 // A response that contains a list of InAppPurchasePricesResponse resource for an app.
@@ -36,7 +36,7 @@ type ListInAppPurchaseManualPricesQuery struct {
 // Get information about a set price or prices for an in-app purchase price schedule.
 //
 // https://developer.apple.com/documentation/appstoreconnectapi/get-v1-inapppurchasepriceschedules-_id_-manualprices
-func (iaps *InAppPurchaseService) ListInAppPurchaseManualPrices(ctx context.Context, inAppPurchaseID string, queryParams *ListInAppPurchaseManualPricesQuery) (*InAppPurchasePricesResponse, *client.ClientResponse, error) {
+func (iaps *InAppPurchaseService) ListInAppPurchaseManualPrices(ctx context.Context, inAppPurchaseID string, queryParams *ListInAppPurchaseManualPricesQuery) (*InAppPurchasePricesResponse, *response.ClientResponse, error) {
 	url := fmt.Sprintf("v1/inAppPurchasePriceSchedules/%s/manualPrices", inAppPurchaseID)
 	respPayload := &InAppPurchasePricesResponse{}
 	resp, err := iaps.client.Get(ctx, url, queryParams, respPayload)
@@ -62,7 +62,7 @@ type ListInAppPurchaseAutomaticPricesQuery struct {
 // Get information about a price or prices automatically set based on a base territory for an in-app purchase price schedule.
 //
 // https://developer.apple.com/documentation/appstoreconnectapi/get-v1-inapppurchasepriceschedules-_id_-automaticprices
-func (iaps *InAppPurchaseService) ListInAppPurchaseAutomaticPrices(ctx context.Context, inAppPurchaseID string, queryParams *ListInAppPurchaseAutomaticPricesQuery) (*InAppPurchasePricesResponse, *client.ClientResponse, error) {
+func (iaps *InAppPurchaseService) ListInAppPurchaseAutomaticPrices(ctx context.Context, inAppPurchaseID string, queryParams *ListInAppPurchaseAutomaticPricesQuery) (*InAppPurchasePricesResponse, *response.ClientResponse, error) {
 	url := fmt.Sprintf("v1/inAppPurchasePriceSchedules/%s/automaticPrices", inAppPurchaseID)
 	respPayload := &InAppPurchasePricesResponse{}
 	resp, err := iaps.client.Get(ctx, url, queryParams, respPayload)

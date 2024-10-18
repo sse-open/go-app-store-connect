@@ -11,6 +11,8 @@ import (
 
 	"github.com/google/go-querystring/query"
 	errorsPkg "github.com/pkg/errors"
+	"github.com/sse-open/go-app-store-connect/client/request"
+	"github.com/sse-open/go-app-store-connect/client/response"
 )
 
 const (
@@ -22,10 +24,10 @@ var ErrRateLimitExceeded = errors.New("hourly rate limit exceeded")
 //go:generate mockery --name IClient
 type IClient interface {
 	SetBaseURL(baseURL string)
-	Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*ClientResponse, error)
-	Post(ctx context.Context, path string, body *AppStoreConnectRequestPayload, respPayload interface{}) (*ClientResponse, error)
-	Patch(ctx context.Context, path string, body *AppStoreConnectRequestPayload, respPayload interface{}) (*ClientResponse, error)
-	Delete(ctx context.Context, path string) (*ClientResponse, error)
+	Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*response.ClientResponse, error)
+	Post(ctx context.Context, path string, body *request.AppStoreConnectRequestPayload, respPayload interface{}) (*response.ClientResponse, error)
+	Patch(ctx context.Context, path string, body *request.AppStoreConnectRequestPayload, respPayload interface{}) (*response.ClientResponse, error)
+	Delete(ctx context.Context, path string) (*response.ClientResponse, error)
 }
 
 type Client struct {
@@ -61,7 +63,7 @@ func (c *Client) SetBaseURL(baseURL string) {
 	c.baseURL = u
 }
 
-func (c *Client) Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*ClientResponse, error) {
+func (c *Client) Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*response.ClientResponse, error) {
 	resp, err := c.createAndExecuteRequest(ctx, "GET", path, query, nil, respPayload)
 
 	if err != nil {
@@ -71,7 +73,7 @@ func (c *Client) Get(ctx context.Context, path string, query interface{}, respPa
 	return resp, nil
 }
 
-func (c *Client) Post(ctx context.Context, path string, body *AppStoreConnectRequestPayload, respPayload interface{}) (*ClientResponse, error) {
+func (c *Client) Post(ctx context.Context, path string, body *request.AppStoreConnectRequestPayload, respPayload interface{}) (*response.ClientResponse, error) {
 	resp, err := c.createAndExecuteRequest(ctx, "POST", path, nil, body, respPayload)
 
 	if err != nil {
@@ -81,7 +83,7 @@ func (c *Client) Post(ctx context.Context, path string, body *AppStoreConnectReq
 	return resp, nil
 }
 
-func (c *Client) Patch(ctx context.Context, path string, body *AppStoreConnectRequestPayload, respPayload interface{}) (*ClientResponse, error) {
+func (c *Client) Patch(ctx context.Context, path string, body *request.AppStoreConnectRequestPayload, respPayload interface{}) (*response.ClientResponse, error) {
 	resp, err := c.createAndExecuteRequest(ctx, "PATCH", path, nil, body, respPayload)
 
 	if err != nil {
@@ -91,7 +93,7 @@ func (c *Client) Patch(ctx context.Context, path string, body *AppStoreConnectRe
 	return resp, nil
 }
 
-func (c *Client) Delete(ctx context.Context, path string) (*ClientResponse, error) {
+func (c *Client) Delete(ctx context.Context, path string) (*response.ClientResponse, error) {
 	resp, err := c.createAndExecuteRequest(ctx, "DELETE", path, nil, nil, nil)
 
 	if err != nil {
@@ -101,7 +103,7 @@ func (c *Client) Delete(ctx context.Context, path string) (*ClientResponse, erro
 	return resp, nil
 }
 
-func (c *Client) createAndExecuteRequest(ctx context.Context, method string, path string, query interface{}, body *AppStoreConnectRequestPayload, respPayload interface{}) (*ClientResponse, error) {
+func (c *Client) createAndExecuteRequest(ctx context.Context, method string, path string, query interface{}, body *request.AppStoreConnectRequestPayload, respPayload interface{}) (*response.ClientResponse, error) {
 	req, err := c.newHTTPRequest(ctx, method, path, query, body)
 	if err != nil {
 		return nil, errorsPkg.Wrap(err, "failed to create new HTTP request")
@@ -115,7 +117,7 @@ func (c *Client) createAndExecuteRequest(ctx context.Context, method string, pat
 	return resp, err
 }
 
-func (c *Client) newHTTPRequest(ctx context.Context, method string, path string, queryParameters interface{}, body *AppStoreConnectRequestPayload) (*http.Request, error) {
+func (c *Client) newHTTPRequest(ctx context.Context, method string, path string, queryParameters interface{}, body *request.AppStoreConnectRequestPayload) (*http.Request, error) {
 	rel, err := url.Parse(path)
 	if err != nil {
 		return nil, errorsPkg.Wrap(err, "failed to parse path")
@@ -165,28 +167,28 @@ func (c *Client) newHTTPRequest(ctx context.Context, method string, path string,
 	return req, nil
 }
 
-func (c *Client) executeHTTPRequest(request *http.Request, respPayload interface{}) (*ClientResponse, error) {
-	response, err := c.client.Do(request)
+func (c *Client) executeHTTPRequest(request *http.Request, respPayload interface{}) (*response.ClientResponse, error) {
+	resp, err := c.client.Do(request)
 
 	if err != nil {
-		if response != nil {
-			return NewResponse(response), err
+		if resp != nil {
+			return response.NewResponse(resp), err
 		} else {
 			return nil, err
 		}
 	}
 
-	if err := handleErrorResponse(response); err != nil {
+	if err := handleErrorResponse(resp); err != nil {
 		return nil, err
 	}
 
-	if respPayload != nil {
-		err = json.NewDecoder(response.Body).Decode(respPayload)
+	if respPayload != nil && resp.StatusCode != http.StatusNoContent {
+		err = json.NewDecoder(resp.Body).Decode(respPayload)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return NewResponse(response), nil
+	return response.NewResponse(resp), nil
 }
 
 func handleErrorResponse(response *http.Response) error {
@@ -205,5 +207,5 @@ func handleErrorResponse(response *http.Response) error {
 	}
 	errorResponse.Response = response
 
-	return &errorResponse
+	return errorResponse
 }

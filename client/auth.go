@@ -19,6 +19,7 @@ var ErrInvalidKeyID = errors.New("key ID is invalid")
 
 var ErrInvalidIssuerID = errors.New("issuer ID is invalid")
 
+//go:generate mockery --name IJWTProvider
 type IJWTProvider interface {
 	GetJWTToken() (string, error)
 }

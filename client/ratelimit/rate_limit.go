@@ -1,4 +1,4 @@
-package client
+package ratelimit
 
 import (
 	"net/http"
