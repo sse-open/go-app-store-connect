@@ -19,6 +19,7 @@ const (
 
 var ErrRateLimitExceeded = errors.New("hourly rate limit exceeded")
 
+//go:generate mockery --name IClient
 type IClient interface {
 	SetBaseURL(baseURL string)
 	Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*ClientResponse, error)

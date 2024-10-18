@@ -6,6 +6,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/client"
 )
 
+//go:generate mockery --name IInAppPurchaseService
 type IInAppPurchaseService interface {
 	ListAppInAppPurchases(ctx context.Context, appID string, queryParams *ListAppInAppPurchasesQuery) (*InAppPurchasesV2Response, *client.ClientResponse, error)
 	ListInAppPurchaseManualPrices(ctx context.Context, inAppPurchaseID string, queryParams *ListInAppPurchaseManualPricesQuery) (*InAppPurchasePricesResponse, *client.ClientResponse, error)
