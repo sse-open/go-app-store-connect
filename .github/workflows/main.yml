@@ -1,0 +1,12 @@
+name: Main Branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  qa:
+    name: QA
+    uses: ./.github/workflows/qa.yml
+    secrets: inherit
