@@ -23,11 +23,11 @@ The library is instantiated via creating a App Store Connect object, with a give
 An example of this:
 ```go
     import (
-	    "errors"
+        "errors"
 
-	    "github.com/sse-open/go-app-store-connect/appstoreconnect"
-	    "github.com/sse-open/go-app-store-connect/appstoreconnect/apps"
-	    "github.com/sse-open/go-app-store-connect/client"
+        "github.com/sse-open/go-app-store-connect/appstoreconnect"
+        "github.com/sse-open/go-app-store-connect/appstoreconnect/apps"
+        "github.com/sse-open/go-app-store-connect/client"
     )
 
     ...
@@ -59,16 +59,16 @@ The returned data from the endpoint functions generally follow the same structur
 If an error is returned it can be inspected further by converting it to a client.ErrorResponse type, making the App Store Connect API specific error information accessible. For example:
 ```go
     import (
-	    "errors"
+        "errors"
 
-	    "github.com/sse-open/go-app-store-connect/appstoreconnect"
-	    "github.com/sse-open/go-app-store-connect/appstoreconnect/apps"
-	    "github.com/sse-open/go-app-store-connect/client"
+        "github.com/sse-open/go-app-store-connect/appstoreconnect"
+        "github.com/sse-open/go-app-store-connect/appstoreconnect/apps"
+        "github.com/sse-open/go-app-store-connect/client"
     )
 
     ...
 
-	_, _, err := appsService.ListApps(ctx, &params)
+    _, _, err := appsService.ListApps(ctx, &params)
 
     if err != nil {
         var errorReponse client.ErrorResponse
