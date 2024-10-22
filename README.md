@@ -32,23 +32,23 @@ An example of this:
 
     ...
 
-	jwtProvider, err := client.NewJWTProvider(keyId, issuerId, 20*time.Minute, privateKeyData)
-	if err != nil {
-		panic(err)
-	}
+    jwtProvider, err := client.NewJWTProvider(keyId, issuerId, 20*time.Minute, privateKeyData)
+    if err != nil {
+        panic(err)
+    }
 
-	appStoreConnect, err := appstoreconnect.NewAppStoreConnect(nil, jwtProvider)
-	if err != nil {
-		panic(err)
-	}
+    appStoreConnect, err := appstoreconnect.NewAppStoreConnect(nil, jwtProvider)
+    if err != nil {
+        panic(err)
+    }
 
-	appsService := appStoreConnect.AppsService()
+    appsService := appStoreConnect.AppsService()
 
     ctx := context.Background()
-	params := apps.ListAppsQuery{
-		FilterBundleID: "com.example.app",
-	}
-	appsResponse, clientResponse, err := appsService.ListApps(ctx, &params)
+    params := apps.ListAppsQuery{
+        FilterBundleID: "com.example.app",
+    }
+    appsResponse, clientResponse, err := appsService.ListApps(ctx, &params)
 ```
 
 The JWT provider will be used to generate a token as needed by the client, using the provided Key ID, Issuer ID and Private Key all of which is given out upon creation of a new API key in App Store Connect. For more information on creating a key, and using it in communication with the api, please see [Creating API Keys for App Store Connect API
