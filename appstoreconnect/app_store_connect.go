@@ -1,6 +1,8 @@
 package appstoreconnect
 
 import (
+	"net/http"
+
 	errorsPkg "github.com/pkg/errors"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/apps"
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/inapppurchase"
@@ -16,8 +18,8 @@ type AppStoreConnect struct {
 	client *client.Client
 }
 
-func NewAppStoreConnect(jwtProvider client.IJWTProvider) (*AppStoreConnect, error) {
-	client, err := client.NewClient(nil, jwtProvider)
+func NewAppStoreConnect(httpClient *http.Client, jwtProvider client.IJWTProvider) (*AppStoreConnect, error) {
+	client, err := client.NewClient(httpClient, jwtProvider)
 	if err != nil {
 		return nil, errorsPkg.Wrap(err, "failed to create client")
 	}
