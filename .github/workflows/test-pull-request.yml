@@ -1,0 +1,11 @@
+name: Test Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  qa:
+    name: QA
+    uses: ./.github/workflows/qa.yml
+    secrets: inherit
