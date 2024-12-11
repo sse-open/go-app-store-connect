@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 
 	"github.com/google/go-querystring/query"
 	errorsPkg "github.com/pkg/errors"
+	"github.com/sse-open/go-app-store-connect/client/ratelimit"
 	"github.com/sse-open/go-app-store-connect/client/request"
 	"github.com/sse-open/go-app-store-connect/client/response"
 )
@@ -19,7 +19,20 @@ const (
 	defaultBaseURL = "https://api.appstoreconnect.apple.com/"
 )
 
-var ErrRateLimitExceeded = errors.New("hourly rate limit exceeded")
+type ErrorWithRateLimit struct {
+	message            string
+	rateLimitLimit     int
+	rateLimitRemaining int
+}
+
+func (e ErrorWithRateLimit) Error() string {
+	if e.rateLimitLimit > 0 {
+		return fmt.Sprintf("%s. Rate limit: %d/%d", e.message, e.rateLimitRemaining, e.rateLimitLimit)
+	}
+	return e.message
+}
+
+var ErrRateLimitExceeded = ErrorWithRateLimit{"hourly rate limit exceeded", 0, 0}
 
 //go:generate mockery --name IClient
 type IClient interface {
@@ -197,7 +210,13 @@ func handleErrorResponse(response *http.Response) error {
 	}
 
 	if response.StatusCode == 429 {
-		return ErrRateLimitExceeded
+		rateLimitInfo := ratelimit.ParseRateLimitInfo(response)
+		errRateLimitExceeded := ErrRateLimitExceeded
+		if rateLimitInfo != nil {
+			errRateLimitExceeded.rateLimitLimit = *rateLimitInfo.Limit
+			errRateLimitExceeded.rateLimitRemaining = *rateLimitInfo.Remaining
+		}
+		return errRateLimitExceeded
 	}
 
 	var errorResponse ErrorResponse

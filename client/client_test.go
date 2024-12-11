@@ -259,8 +259,24 @@ func TestHandleErrorResponseStatusOK(t *testing.T) {
 func TestHandleErrorResponseRateLimitExceeded(t *testing.T) {
 	response := http.Response{
 		StatusCode: 429,
+		Header: http.Header{
+			"X-Rate-Limit": []string{"user-hour-lim:100;user-hour-rem:0"},
+		},
 	}
 	err := handleErrorResponse(&response)
 
-	assert.True(t, errors.Is(err, ErrRateLimitExceeded))
+	expectedErr := ErrRateLimitExceeded
+	expectedErr.rateLimitLimit = 100
+	expectedErr.rateLimitRemaining = 0
+	assert.True(t, errors.Is(err, expectedErr))
+}
+
+func TestHandleErrorResponseRateLimitMissing(t *testing.T) {
+	response := http.Response{
+		StatusCode: 429,
+	}
+	err := handleErrorResponse(&response)
+
+	expectedErr := ErrRateLimitExceeded
+	assert.True(t, errors.Is(err, expectedErr))
 }
