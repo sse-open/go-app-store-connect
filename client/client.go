@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://api.appstoreconnect.apple.com/"
+	appStoreConnectBaseURL = "https://api.appstoreconnect.apple.com/"
+	appStoreServerBaseURL  = "https://api.storekit.itunes.apple.com/"
 )
 
 type ErrorWithRateLimit struct {
@@ -49,14 +50,35 @@ type Client struct {
 	jwtProvider IJWTProvider
 }
 
-func NewClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+// App Store Connect API client
+func NewConnectClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, err := url.Parse(defaultBaseURL)
+	baseURL, err := url.Parse(appStoreConnectBaseURL)
 	if err != nil {
-		return nil, errorsPkg.Wrap(err, "failed to parse default base URL")
+		return nil, errorsPkg.Wrap(err, "failed to parse App Store Connect base URL")
+	}
+
+	c := &Client{
+		client:      httpClient,
+		baseURL:     baseURL,
+		jwtProvider: jwtProvider,
+	}
+
+	return c, nil
+}
+
+// App Store Server API client
+func NewServerClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+	if httpClient == nil {
+		httpClient = &http.Client{}
+	}
+
+	baseURL, err := url.Parse(appStoreServerBaseURL)
+	if err != nil {
+		return nil, errorsPkg.Wrap(err, "failed to parse App Store StoreKit base URL")
 	}
 
 	c := &Client{

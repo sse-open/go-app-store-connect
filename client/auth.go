@@ -19,6 +19,11 @@ var ErrInvalidKeyID = errors.New("key ID is invalid")
 
 var ErrInvalidIssuerID = errors.New("issuer ID is invalid")
 
+type jwtClaims struct {
+	jwt.RegisteredClaims
+	BundleID string `json:"bid,omitempty"` // Optional, can be used to associate the token with a specific app
+}
+
 //go:generate mockery --name IJWTProvider
 type IJWTProvider interface {
 	GetJWTToken() (string, error)
@@ -27,11 +32,16 @@ type IJWTProvider interface {
 type JWTProvider struct {
 	keyID          string
 	issuerID       string
+	bundleID       string // Optional
 	expireDuration time.Duration
 	privateKey     *ecdsa.PrivateKey
 
 	token            string
 	tokenGeneratedAt *time.Time
+}
+
+func (p *JWTProvider) SetBundleID(bundleID string) {
+	p.bundleID = bundleID
 }
 
 func NewJWTProvider(keyID string, issuerID string, expireDuration time.Duration, privateKey []byte) (*JWTProvider, error) {
@@ -83,11 +93,14 @@ func (p *JWTProvider) GetJWTToken() (string, error) {
 
 	expiry := issuedAt.Add(p.expireDuration)
 
-	claims := &jwt.RegisteredClaims{
-		Audience:  jwt.ClaimStrings{"appstoreconnect-v1"},
-		ExpiresAt: jwt.NewNumericDate(expiry),
-		Issuer:    p.issuerID,
-		IssuedAt:  jwt.NewNumericDate(issuedAt),
+	claims := &jwtClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Audience:  jwt.ClaimStrings{"appstoreconnect-v1"},
+			ExpiresAt: jwt.NewNumericDate(expiry),
+			Issuer:    p.issuerID,
+			IssuedAt:  jwt.NewNumericDate(issuedAt),
+		},
+		BundleID: p.bundleID,
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
