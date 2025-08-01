@@ -4,10 +4,12 @@ import (
 	"net/http"
 
 	errorsPkg "github.com/pkg/errors"
+	"github.com/sse-open/go-app-store-connect/appstoreserver/inapps"
 	"github.com/sse-open/go-app-store-connect/client"
 )
 
 type IAppStoreServer interface {
+	InAppsService() inapps.IInAppsService
 }
 
 type AppStoreServer struct {
@@ -25,6 +27,6 @@ func NewAppStoreServer(httpClient *http.Client, jwtProvider client.IJWTProvider)
 	}, nil
 }
 
-// func (asc *AppStoreServer) InAppsService() apps.IAppsService {
-// 	return apps.NewAppsService(asc.client)
-// }
+func (asc *AppStoreServer) InAppsService() inapps.IInAppsService {
+	return inapps.NewInAppsService(asc.client)
+}
