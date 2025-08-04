@@ -18,7 +18,7 @@ func (jt JWSTransaction) Decode() (*JWSTransactionDecodedPayload, error) {
 	return payload, nil
 }
 
-// JWSTransactionDecodedPayload is a decoded payload that contains transaction information.
+// a decoded payload that contains transaction information.
 //
 // https://developer.apple.com/documentation/appstoreserverapi/jwstransactiondecodedpayload
 type JWSTransactionDecodedPayload struct {
@@ -69,27 +69,30 @@ func (jt JWSRenewalInfo) Decode() (*JWSRenewalInfoDecodedPayload, error) {
 	return payload, nil
 }
 
+// a decoded payload that contains renewal information.
+//
+// https://developer.apple.com/documentation/appstoreserverapi/jwsrenewalinfodecodedpayload
 type JWSRenewalInfoDecodedPayload struct {
 	jwt.RegisteredClaims
-	AppAccountToken             string   `json:"appAccountToken"`
-	AppTransactionId            string   `json:"appTransactionId"`
-	AutoRenewProductId          string   `json:"autoRenewProductId"`
-	AutoRenewStatus             string   `json:"autoRenewStatus"`
-	Currency                    string   `json:"currency"`
-	EligibleWinBackOfferIds     []string `json:"eligibleWinBackOfferIds"`
-	Environment                 string   `json:"environment"`
-	ExpirationIntent            string   `json:"expirationIntent"`
-	GracePeriodExpiresDate      int64    `json:"gracePeriodExpiresDate"`
-	IsInBillingRetryPeriod      bool     `json:"isInBillingRetryPeriod"`
-	OfferDiscountType           string   `json:"offerDiscountType"`
-	OfferIdentifier             string   `json:"offerIdentifier"`
-	OfferPeriod                 string   `json:"offerPeriod"`
-	OfferType                   string   `json:"offerType"`
-	OriginalTransactionId       string   `json:"originalTransactionId"`
-	PriceIncreaseStatus         string   `json:"priceIncreaseStatus"`
-	ProductId                   string   `json:"productId"`
-	RecentSubscriptionStartDate int64    `json:"recentSubscriptionStartDate"`
-	RenewalDate                 int64    `json:"renewalDate"`
-	RenewalPrice                int64    `json:"renewalPrice"`
-	SignedDate                  int64    `json:"signedDate"`
+	AppAccountToken             string        `json:"appAccountToken"`
+	AppTransactionId            string        `json:"appTransactionId"`
+	AutoRenewProductId          string        `json:"autoRenewProductId"`
+	AutoRenewStatus             string        `json:"autoRenewStatus"`
+	Currency                    string        `json:"currency"`
+	EligibleWinBackOfferIds     []string      `json:"eligibleWinBackOfferIds"`
+	Environment                 string        `json:"environment"`
+	ExpirationIntent            string        `json:"expirationIntent"`
+	GracePeriodExpiresDate      *JWSTimestamp `json:"gracePeriodExpiresDate"`
+	IsInBillingRetryPeriod      bool          `json:"isInBillingRetryPeriod"`
+	OfferDiscountType           string        `json:"offerDiscountType"`
+	OfferIdentifier             string        `json:"offerIdentifier"`
+	OfferPeriod                 string        `json:"offerPeriod"`
+	OfferType                   string        `json:"offerType"`
+	OriginalTransactionId       string        `json:"originalTransactionId"`
+	PriceIncreaseStatus         string        `json:"priceIncreaseStatus"`
+	ProductId                   string        `json:"productId"`
+	RecentSubscriptionStartDate int64         `json:"recentSubscriptionStartDate"`
+	RenewalDate                 *JWSTimestamp `json:"renewalDate"`
+	RenewalPrice                int64         `json:"renewalPrice"`
+	SignedDate                  *JWSTimestamp `json:"signedDate"`
 }

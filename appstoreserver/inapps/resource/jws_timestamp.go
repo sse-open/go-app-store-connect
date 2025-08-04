@@ -6,10 +6,12 @@ import (
 	"time"
 )
 
-type JWSTimestamp time.Time
+type JWSTimestamp struct {
+	time.Time
+}
 
 func (t JWSTimestamp) MarshalJSON() ([]byte, error) {
-	return []byte(strconv.FormatInt(time.Time(t).Unix(), 10)), nil
+	return []byte(strconv.FormatInt(time.Time(t.Time).Unix(), 10)), nil
 }
 
 func (t *JWSTimestamp) UnmarshalJSON(data []byte) error {
@@ -17,6 +19,6 @@ func (t *JWSTimestamp) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &timestamp); err != nil {
 		return err
 	}
-	*t = JWSTimestamp(time.Unix(timestamp, 0))
+	*t = JWSTimestamp{time.Unix(timestamp, 0)}
 	return nil
 }
