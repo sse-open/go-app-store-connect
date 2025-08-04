@@ -1,6 +1,8 @@
 package resource
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type JWSDecodedHeader struct{}
 
@@ -16,34 +18,37 @@ func (jt JWSTransaction) Decode() (*JWSTransactionDecodedPayload, error) {
 	return payload, nil
 }
 
+// JWSTransactionDecodedPayload is a decoded payload that contains transaction information.
+//
+// https://developer.apple.com/documentation/appstoreserverapi/jwstransactiondecodedpayload
 type JWSTransactionDecodedPayload struct {
 	jwt.RegisteredClaims
-	AppAccountToken             string `json:"appAccountToken"`
-	AppTransactionId            string `json:"appTransactionId"`
-	BundleId                    string `json:"bundleId"`
-	Environment                 string `json:"environment"`
-	ExpiresDate                 int    `json:"expiresDate"`
-	InAppOwnershipType          string `json:"inAppOwnershipType"`
-	IsUpgraded                  bool   `json:"isUpgraded"`
-	OfferDiscountType           string `json:"offerDiscountType"`
-	OfferIdentifier             string `json:"offerIdentifier"`
-	OfferPeriod                 string `json:"offerPeriod"`
-	OfferType                   string `json:"offerType"`
-	OriginalPurchaseDate        int    `json:"originalPurchaseDate"`
-	OriginalTransactionId       string `json:"originalTransactionId"`
-	ProductId                   string `json:"productId"`
-	PurchaseDate                int    `json:"purchaseDate"`
-	Quantity                    int    `json:"quantity"`
-	RevocationDate              int    `json:"revocationDate"`
-	RevocationReason            string `json:"revocationReason"`
-	SignedDate                  int    `json:"signedDate"`
-	Storefront                  string `json:"storefront"`
-	StorefrontId                string `json:"storefrontId"`
-	SubscriptionGroupIdentifier string `json:"subscriptionGroupIdentifier"`
-	TransactionId               string `json:"transactionId"`
-	TransactionReason           string `json:"transactionReason"`
-	Type                        string `json:"type"`
-	WebOrderLineItemId          string `json:"webOrderLineItemId"`
+	AppAccountToken             string        `json:"appAccountToken"`
+	AppTransactionId            string        `json:"appTransactionId"`
+	BundleId                    string        `json:"bundleId"`
+	Environment                 string        `json:"environment"`
+	ExpiresDate                 *JWSTimestamp `json:"expiresDate"`
+	InAppOwnershipType          string        `json:"inAppOwnershipType"`
+	IsUpgraded                  bool          `json:"isUpgraded"`
+	OfferDiscountType           string        `json:"offerDiscountType"`
+	OfferIdentifier             string        `json:"offerIdentifier"`
+	OfferPeriod                 string        `json:"offerPeriod"`
+	OfferType                   string        `json:"offerType"`
+	OriginalPurchaseDate        *JWSTimestamp `json:"originalPurchaseDate"`
+	OriginalTransactionId       string        `json:"originalTransactionId"`
+	ProductId                   string        `json:"productId"`
+	PurchaseDate                *JWSTimestamp `json:"purchaseDate"`
+	Quantity                    int           `json:"quantity"`
+	RevocationDate              *JWSTimestamp `json:"revocationDate"`
+	RevocationReason            *int          `json:"revocationReason"`
+	SignedDate                  *JWSTimestamp `json:"signedDate"`
+	Storefront                  string        `json:"storefront"`
+	StorefrontId                string        `json:"storefrontId"`
+	SubscriptionGroupIdentifier string        `json:"subscriptionGroupIdentifier"`
+	TransactionId               string        `json:"transactionId"`
+	TransactionReason           string        `json:"transactionReason"`
+	Type                        string        `json:"type"`
+	WebOrderLineItemId          string        `json:"webOrderLineItemId"`
 
 	// An integer value that represents the price multiplied by 1000 of the
 	// in-app purchase or subscription offer you configured in App Store Connect
