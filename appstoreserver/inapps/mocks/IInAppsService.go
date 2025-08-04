@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	inapps "github.com/sse-open/go-app-store-connect/appstoreserver/inapps"
+	inapps "github.com/sse-open/go-app-store-connect/appstoreserver/resource/inapps"
 	mock "github.com/stretchr/testify/mock"
 
 	response "github.com/sse-open/go-app-store-connect/client/response"

@@ -230,6 +230,17 @@ func handleErrorResponse(response *http.Response) error {
 		return errRateLimitExceeded
 	}
 
+	if response.Header.Get("Content-Type") != "application/json" {
+		return ErrorResponse{
+			Response: response,
+			Errors: []ErrorResponseError{
+				{
+					Status: response.Status,
+				},
+			},
+		}
+	}
+
 	var errorResponse ErrorResponse
 	err := json.NewDecoder(response.Body).Decode(&errorResponse)
 	if err != nil {

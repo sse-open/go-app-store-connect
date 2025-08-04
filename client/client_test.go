@@ -212,6 +212,9 @@ func TestHandleErrorResponse(t *testing.T) {
 			Method: "GET",
 			URL:    &url.URL{},
 		},
+		Header: http.Header{
+			"Content-Type": []string{"application/json"},
+		},
 		Body: io.NopCloser(strings.NewReader(`{
 			"errors": [
 				  {

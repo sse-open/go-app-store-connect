@@ -1,4 +1,4 @@
-package resource
+package common
 
 import (
 	"encoding/json"
@@ -6,19 +6,19 @@ import (
 	"time"
 )
 
-type JWSTimestamp struct {
+type Timestamp struct {
 	time.Time
 }
 
-func (t JWSTimestamp) MarshalJSON() ([]byte, error) {
+func (t Timestamp) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.FormatInt(time.Time(t.Time).Unix(), 10)), nil
 }
 
-func (t *JWSTimestamp) UnmarshalJSON(data []byte) error {
+func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	var timestamp int64
 	if err := json.Unmarshal(data, &timestamp); err != nil {
 		return err
 	}
-	*t = JWSTimestamp{time.Unix(timestamp, 0)}
+	*t = Timestamp{time.Unix(timestamp, 0)}
 	return nil
 }

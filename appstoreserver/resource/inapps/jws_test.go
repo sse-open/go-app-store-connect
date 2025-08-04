@@ -1,4 +1,4 @@
-package resource
+package inapps
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package resource
+package common
 
 import (
 	"encoding/json"
@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestJWSTimestampMarshal(t *testing.T) {
-	timestamp := JWSTimestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
+func TestTimestampMarshal(t *testing.T) {
+	timestamp := Timestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
 	expected := `1696161600`
 
 	data, err := json.Marshal(timestamp)
@@ -19,12 +19,12 @@ func TestJWSTimestampMarshal(t *testing.T) {
 	assert.Equal(t, expected, string(data))
 }
 
-func TestJWSTimestampUnmarshal(t *testing.T) {
-	timestamp := JWSTimestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
+func TestTimestampUnmarshal(t *testing.T) {
+	timestamp := Timestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
 	expected := `1696161600`
 	data := []byte(expected)
 
-	var unmarshalled JWSTimestamp
+	var unmarshalled Timestamp
 	err := json.Unmarshal(data, &unmarshalled)
 	require.NoError(t, err)
 
