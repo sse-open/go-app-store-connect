@@ -52,33 +52,22 @@ type Client struct {
 
 // App Store Connect API client
 func NewConnectClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
-	if httpClient == nil {
-		httpClient = &http.Client{}
-	}
-
-	baseURL, err := url.Parse(appStoreConnectBaseURL)
-	if err != nil {
-		return nil, errorsPkg.Wrap(err, "failed to parse App Store Connect base URL")
-	}
-
-	c := &Client{
-		client:      httpClient,
-		baseURL:     baseURL,
-		jwtProvider: jwtProvider,
-	}
-
-	return c, nil
+	return newClient(httpClient, jwtProvider, appStoreConnectBaseURL)
 }
 
 // App Store Server API client
 func NewServerClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+	return newClient(httpClient, jwtProvider, appStoreServerBaseURL)
+}
+
+func newClient(httpClient *http.Client, jwtProvider IJWTProvider, baseUrl string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, err := url.Parse(appStoreServerBaseURL)
+	baseURL, err := url.Parse(baseUrl)
 	if err != nil {
-		return nil, errorsPkg.Wrap(err, "failed to parse App Store StoreKit base URL")
+		return nil, errorsPkg.Wrap(err, "failed to parse base URL")
 	}
 
 	c := &Client{

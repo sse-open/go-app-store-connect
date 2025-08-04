@@ -40,8 +40,9 @@ type JWTProvider struct {
 	tokenGeneratedAt *time.Time
 }
 
-func (p *JWTProvider) SetBundleID(bundleID string) {
+func (p JWTProvider) WithBundleID(bundleID string) JWTProvider {
 	p.bundleID = bundleID
+	return p
 }
 
 func NewJWTProvider(keyID string, issuerID string, expireDuration time.Duration, privateKey []byte) (*JWTProvider, error) {
