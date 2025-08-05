@@ -28,21 +28,21 @@ type TestResponse struct {
 	TestResponseField string `json:"testResponseField,omitempty"`
 }
 
-func TestNewClient(t *testing.T) {
+func TestNewConnectClient(t *testing.T) {
 	t.Parallel()
 
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
-	assert.Equal(t, defaultBaseURL, c.baseURL.String())
+	assert.Equal(t, appStoreConnectBaseURL, c.baseURL.String())
 }
 
 func TestClientSetBaseURL(t *testing.T) {
 	t.Parallel()
 
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	c.SetBaseURL("https://example.com")
@@ -65,7 +65,7 @@ func TestClientGet(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	queryParams := TestQuery{
@@ -95,7 +95,7 @@ func TestClientGetNotFound(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	queryParams := TestQuery{
@@ -129,7 +129,7 @@ func TestClientPost(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	testPayload := TestPayload{
@@ -162,7 +162,7 @@ func TestClientPatch(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	testPayload := TestPayload{
@@ -194,7 +194,7 @@ func TestClientDelete(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := NewClient(nil, mockedJWTProvider)
+	c, err := NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	resp, err := c.Delete(ctx, "test")
@@ -211,6 +211,9 @@ func TestHandleErrorResponse(t *testing.T) {
 		Request: &http.Request{
 			Method: "GET",
 			URL:    &url.URL{},
+		},
+		Header: http.Header{
+			"Content-Type": []string{"application/json"},
 		},
 		Body: io.NopCloser(strings.NewReader(`{
 			"errors": [

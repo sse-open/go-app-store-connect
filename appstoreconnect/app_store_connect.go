@@ -19,7 +19,7 @@ type AppStoreConnect struct {
 }
 
 func NewAppStoreConnect(httpClient *http.Client, jwtProvider client.IJWTProvider) (*AppStoreConnect, error) {
-	client, err := client.NewClient(httpClient, jwtProvider)
+	client, err := client.NewConnectClient(httpClient, jwtProvider)
 	if err != nil {
 		return nil, errorsPkg.Wrap(err, "failed to create client")
 	}

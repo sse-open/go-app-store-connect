@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://api.appstoreconnect.apple.com/"
+	appStoreConnectBaseURL = "https://api.appstoreconnect.apple.com/"
+	appStoreServerBaseURL  = "https://api.storekit.itunes.apple.com/"
 )
 
 type ErrorWithRateLimit struct {
@@ -49,14 +50,24 @@ type Client struct {
 	jwtProvider IJWTProvider
 }
 
-func NewClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+// App Store Connect API client
+func NewConnectClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+	return newClient(httpClient, jwtProvider, appStoreConnectBaseURL)
+}
+
+// App Store Server API client
+func NewServerClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+	return newClient(httpClient, jwtProvider, appStoreServerBaseURL)
+}
+
+func newClient(httpClient *http.Client, jwtProvider IJWTProvider, baseUrl string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, err := url.Parse(defaultBaseURL)
+	baseURL, err := url.Parse(baseUrl)
 	if err != nil {
-		return nil, errorsPkg.Wrap(err, "failed to parse default base URL")
+		return nil, errorsPkg.Wrap(err, "failed to parse base URL")
 	}
 
 	c := &Client{
@@ -217,6 +228,17 @@ func handleErrorResponse(response *http.Response) error {
 			errRateLimitExceeded.rateLimitRemaining = *rateLimitInfo.Remaining
 		}
 		return errRateLimitExceeded
+	}
+
+	if response.Header.Get("Content-Type") != "application/json" {
+		return ErrorResponse{
+			Response: response,
+			Errors: []ErrorResponseError{
+				{
+					Status: response.Status,
+				},
+			},
+		}
 	}
 
 	var errorResponse ErrorResponse

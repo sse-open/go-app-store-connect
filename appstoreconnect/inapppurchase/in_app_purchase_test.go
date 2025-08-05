@@ -83,7 +83,7 @@ func TestListAppInAppPurchases(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)
@@ -160,7 +160,7 @@ func TestListAppInAppPurchasesBadRequest(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)

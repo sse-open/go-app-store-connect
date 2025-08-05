@@ -96,7 +96,7 @@ func TestListInAppPurchaseManualPrices(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)
@@ -180,7 +180,7 @@ func TestListInAppPurchaseManualPricesBadRequest(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)
@@ -292,7 +292,7 @@ func TestListInAppPurchaseAutomaticPrices(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)
@@ -376,7 +376,7 @@ func TestListInAppPurchaseAutomaticPricesBadRequest(t *testing.T) {
 	mockedJWTProvider := mocks.NewIJWTProvider(t)
 	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-	c, err := client.NewClient(nil, mockedJWTProvider)
+	c, err := client.NewConnectClient(nil, mockedJWTProvider)
 	assert.NoError(t, err)
 
 	appsService := NewInAppPurchaseService(c)
