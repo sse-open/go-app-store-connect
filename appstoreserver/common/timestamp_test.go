@@ -11,7 +11,7 @@ import (
 
 func TestTimestampMarshal(t *testing.T) {
 	timestamp := Timestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
-	expected := `1696161600`
+	expected := `1696161600000`
 
 	data, err := json.Marshal(timestamp)
 	require.NoError(t, err)
@@ -21,7 +21,7 @@ func TestTimestampMarshal(t *testing.T) {
 
 func TestTimestampUnmarshal(t *testing.T) {
 	timestamp := Timestamp{time.Date(2023, 10, 1, 12, 0, 0, 0, time.UTC)}
-	expected := `1696161600`
+	expected := `1696161600000`
 	data := []byte(expected)
 
 	var unmarshalled Timestamp
