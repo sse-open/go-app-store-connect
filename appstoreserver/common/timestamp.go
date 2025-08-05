@@ -11,7 +11,7 @@ type Timestamp struct {
 }
 
 func (t Timestamp) MarshalJSON() ([]byte, error) {
-	return []byte(strconv.FormatInt(time.Time(t.Time).Unix(), 10)), nil
+	return []byte(strconv.FormatInt(time.Time(t.Time).UnixMilli(), 10)), nil
 }
 
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
@@ -19,6 +19,6 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &timestamp); err != nil {
 		return err
 	}
-	*t = Timestamp{time.Unix(timestamp, 0)}
+	*t = Timestamp{time.UnixMilli(timestamp)}
 	return nil
 }
