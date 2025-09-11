@@ -16,8 +16,9 @@ import (
 )
 
 const (
-	appStoreConnectBaseURL = "https://api.appstoreconnect.apple.com/"
-	appStoreServerBaseURL  = "https://api.storekit.itunes.apple.com/"
+	appStoreConnectBaseURL       = "https://api.appstoreconnect.apple.com/"
+	appStoreServerBaseURL        = "https://api.storekit.itunes.apple.com/"
+	appStoreSandboxServerBaseURL = "https://api.storekit-sandbox.itunes.apple.com/"
 )
 
 type ErrorWithRateLimit struct {
@@ -56,7 +57,10 @@ func NewConnectClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Clien
 }
 
 // App Store Server API client
-func NewServerClient(httpClient *http.Client, jwtProvider IJWTProvider) (*Client, error) {
+func NewServerClient(httpClient *http.Client, jwtProvider IJWTProvider, sandbox bool) (*Client, error) {
+	if sandbox {
+		return newClient(httpClient, jwtProvider, appStoreSandboxServerBaseURL)
+	}
 	return newClient(httpClient, jwtProvider, appStoreServerBaseURL)
 }
 
@@ -77,14 +81,6 @@ func newClient(httpClient *http.Client, jwtProvider IJWTProvider, baseUrl string
 	}
 
 	return c, nil
-}
-
-func (c *Client) SetBaseURL(baseURL string) {
-	u, err := url.Parse(baseURL)
-	if err != nil {
-		return
-	}
-	c.baseURL = u
 }
 
 func (c *Client) Get(ctx context.Context, path string, query interface{}, respPayload interface{}) (*response.ClientResponse, error) {

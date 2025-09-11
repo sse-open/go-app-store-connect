@@ -8,6 +8,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/client/response"
 )
 
+// https://developer.apple.com/documentation/appstoreserverapi/look-up-order-id
 func (iaps *InAppsService) LookUpOrderID(ctx context.Context, orderID string) (*inapps.OrderLookupResponse, *response.ClientResponse, error) {
 	url := fmt.Sprintf("inApps/v1/lookup/%s", orderID)
 	respPayload := &inapps.OrderLookupResponse{}
