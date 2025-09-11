@@ -11,6 +11,7 @@ import (
 //go:generate mockery --name IInAppsService
 type IInAppsService interface {
 	LookUpOrderID(ctx context.Context, orderID string) (*inapps.OrderLookupResponse, *response.ClientResponse, error)
+	GetTransactionInfo(ctx context.Context, transactionId string) (*inapps.TransactionInfoResponse, *response.ClientResponse, error)
 }
 
 type InAppsService struct {

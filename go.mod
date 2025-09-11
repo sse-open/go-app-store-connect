@@ -1,14 +1,16 @@
 module github.com/sse-open/go-app-store-connect
 
-go 1.22.7
+go 1.25
 
 require (
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/go-querystring v1.1.0
+	github.com/google/uuid v1.6.0
 	github.com/h2non/gock v1.2.0
 	github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.9.0
+	github.com/shopspring/decimal v1.4.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (

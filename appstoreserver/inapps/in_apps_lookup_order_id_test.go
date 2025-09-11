@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/h2non/gock"
+	"github.com/sse-open/go-app-store-connect/appstoreserver/resource/common"
 	"github.com/sse-open/go-app-store-connect/appstoreserver/resource/inapps"
 	"github.com/sse-open/go-app-store-connect/client"
 	"github.com/sse-open/go-app-store-connect/client/mocks"
@@ -47,7 +48,7 @@ func TestLookupOrderId(t *testing.T) {
 
 		assert.Equal(t, inapps.OrderLookupStatusSuccess, response.Status)
 		if assert.Len(t, response.SignedTransactions, 1) {
-			assert.Equal(t, inapps.JWSTransaction("xxx.yyy.zzz"), response.SignedTransactions[0])
+			assert.Equal(t, common.JWSTransaction("xxx.yyy.zzz"), response.SignedTransactions[0])
 		}
 	})
 

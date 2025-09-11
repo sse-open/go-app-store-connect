@@ -19,6 +19,6 @@ func (t *Timestamp) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &timestamp); err != nil {
 		return err
 	}
-	*t = Timestamp{time.UnixMilli(timestamp)}
+	*t = Timestamp{time.UnixMilli(timestamp).UTC()}
 	return nil
 }

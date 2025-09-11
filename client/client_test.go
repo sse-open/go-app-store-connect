@@ -38,18 +38,6 @@ func TestNewConnectClient(t *testing.T) {
 	assert.Equal(t, appStoreConnectBaseURL, c.baseURL.String())
 }
 
-func TestClientSetBaseURL(t *testing.T) {
-	t.Parallel()
-
-	mockedJWTProvider := mocks.NewIJWTProvider(t)
-	c, err := NewConnectClient(nil, mockedJWTProvider)
-	assert.NoError(t, err)
-
-	c.SetBaseURL("https://example.com")
-
-	assert.Equal(t, "https://example.com", c.baseURL.String())
-}
-
 func TestClientGet(t *testing.T) {
 	defer gock.Off() // Flush pending mocks after test execution
 

@@ -1,4 +1,4 @@
-package inapps
+package common
 
 import (
 	"testing"
@@ -21,8 +21,8 @@ func TestJWSTransactionDecode(t *testing.T) {
 		assert.Equal(t, "11111122223333", decoded.TransactionId)
 		assert.Equal(t, "11111122223333", decoded.OriginalTransactionId)
 		assert.Equal(t, "com.example.app.coolstuff", decoded.ProductId)
-		assert.Equal(t, "Consumable", decoded.Type)
+		assert.Equal(t, TransactionTypeConsumable, decoded.Type)
 		assert.Equal(t, "AUD", decoded.Currency)
-		assert.Equal(t, int64(59990), decoded.Price)
+		assert.Equal(t, Price(59990), decoded.Price)
 	})
 }
