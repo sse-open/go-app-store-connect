@@ -1,8 +1,6 @@
 package inapppurchase
 
 import (
-	"time"
-
 	"github.com/sse-open/go-app-store-connect/appstoreconnect/common"
 )
 
@@ -10,9 +8,9 @@ import (
 //
 // https://developer.apple.com/documentation/appstoreconnectapi/inapppurchaseprice/attributes-data.dictionary
 type InAppPurchasePriceAttributes struct {
-	EndDate   *time.Time `json:"endDate,omitempty"`
-	Manual    *bool      `json:"manual,omitempty"`
-	StartDate *time.Time `json:"startDate,omitempty"`
+	EndDate   *common.Date `json:"endDate,omitempty"`
+	Manual    *bool        `json:"manual,omitempty"`
+	StartDate *common.Date `json:"startDate,omitempty"`
 }
 
 // The relationships you included in the request and those on which you can operate.
