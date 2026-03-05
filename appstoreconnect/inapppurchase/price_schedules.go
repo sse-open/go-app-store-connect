@@ -31,6 +31,7 @@ type ListInAppPurchaseManualPricesQuery struct {
 	Limit                          int    `url:"limit,omitempty"`
 	FilterTerritory                string `url:"filter[territory],omitempty"`
 	FieldsTerritories              string `url:"fields[territories],omitempty"`
+	Cursor                         string `url:"cursor,omitempty"`
 }
 
 // Get information about a set price or prices for an in-app purchase price schedule.
@@ -57,6 +58,7 @@ type ListInAppPurchaseAutomaticPricesQuery struct {
 	Limit                          int    `url:"limit,omitempty"`
 	FilterTerritory                string `url:"filter[territory],omitempty"`
 	FieldsTerritories              string `url:"fields[territories],omitempty"`
+	Cursor                         string `url:"cursor,omitempty"`
 }
 
 // Get information about a price or prices automatically set based on a base territory for an in-app purchase price schedule.
