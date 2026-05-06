@@ -22,7 +22,7 @@ func TestLookupOrderId(t *testing.T) {
 
 		orderID := "order123"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/lookup/%s", orderID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			Reply(200).
@@ -36,7 +36,7 @@ func TestLookupOrderId(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		appsService := NewInAppsService(c)
@@ -59,7 +59,7 @@ func TestLookupOrderId(t *testing.T) {
 
 		orderID := "orderNotFound"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/lookup/%s", orderID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			Reply(200).
@@ -70,7 +70,7 @@ func TestLookupOrderId(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		appsService := NewInAppsService(c)
@@ -89,7 +89,7 @@ func TestLookupOrderId(t *testing.T) {
 
 		orderID := "orderWrongApp"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/lookup/%s", orderID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			Reply(401).
@@ -98,7 +98,7 @@ func TestLookupOrderId(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		appsService := NewInAppsService(c)

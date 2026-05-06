@@ -22,7 +22,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 
 		transactionID := "transaction123"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			Reply(200).
@@ -48,7 +48,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		subscriptionService := NewSubscriptionService(c)
@@ -81,7 +81,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 
 		transactionID := "transaction123"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			MatchParam("status", "1").
@@ -108,7 +108,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		subscriptionService := NewSubscriptionService(c)
@@ -145,7 +145,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 
 		transactionID := "invalidTransactionID"
 
-		gock.New("https://api.appstoreconnect.apple.com").
+		gock.New("https://api.storekit-sandbox.itunes.apple.com").
 			Get(fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
 			Reply(400).
@@ -157,7 +157,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
 
-		c, err := client.NewConnectClient(nil, mockedJWTProvider)
+		c, err := client.NewServerClient(nil, mockedJWTProvider, true)
 		assert.NoError(t, err)
 
 		subscriptionService := NewSubscriptionService(c)
@@ -166,7 +166,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		responseError := client.ErrorResponse{}
 		if assert.ErrorAs(t, err, &responseError) {
 			assert.NotNil(t, responseError.Response)
-			assert.Equal(t, responseError.Response.StatusCode, http.StatusBadRequest)
+			assert.Equal(t, http.StatusBadRequest, responseError.Response.StatusCode)
 		}
 		assert.Nil(t, response)
 		assert.Nil(t, clientResponse)
