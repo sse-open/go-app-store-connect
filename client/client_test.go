@@ -169,6 +169,37 @@ func TestClientPatch(t *testing.T) {
 	st.Expect(t, gock.IsDone(), true)
 }
 
+func TestClientPut(t *testing.T) {
+	defer gock.Off() // Flush pending mocks after test execution
+
+	ctx := context.Background()
+
+	gock.New("https://api.appstoreconnect.apple.com").
+		Put("/test").
+		MatchHeader("Authorization", "Bearer fakeToken").
+		JSON(map[string]string{"testField": "testFieldValue"}).
+		Reply(200).
+		JSON(map[string]string{"testResponseField": "testResponseValue"})
+
+	mockedJWTProvider := mocks.NewIJWTProvider(t)
+	mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
+
+	c, err := NewConnectClient(nil, mockedJWTProvider)
+	assert.NoError(t, err)
+
+	testPayload := TestPayload{
+		TestField: "testFieldValue",
+	}
+	var testRes TestResponse
+	resp, err := c.Put(ctx, "test", testPayload, &testRes)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	assert.Equal(t, "testResponseValue", testRes.TestResponseField)
+
+	mockedJWTProvider.AssertExpectations(t)
+	st.Expect(t, gock.IsDone(), true)
+}
+
 func TestClientDelete(t *testing.T) {
 	defer gock.Off() // Flush pending mocks after test execution
 

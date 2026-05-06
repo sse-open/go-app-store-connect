@@ -7,14 +7,13 @@ import (
 	"testing"
 
 	"github.com/h2non/gock"
-	"github.com/sse-open/go-app-store-connect/appstoreserver/resource/common"
 	"github.com/sse-open/go-app-store-connect/client"
 	"github.com/sse-open/go-app-store-connect/client/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetTransactionInfo(t *testing.T) {
-	t.Run("get success", func(t *testing.T) {
+func TestFinishTransaction(t *testing.T) {
+	t.Run("finish success", func(t *testing.T) {
 		defer gock.Off() // Flush pending mocks after test execution
 
 		ctx := context.Background()
@@ -22,12 +21,9 @@ func TestGetTransactionInfo(t *testing.T) {
 		transactionID := "transaction123"
 
 		gock.New("https://api.storekit-sandbox.itunes.apple.com").
-			Get(fmt.Sprintf("/inApps/v1/transactions/%s", transactionID)).
+			Post(fmt.Sprintf("/inApps/v1/transactions/%s/finish", transactionID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
-			Reply(200).
-			JSON(map[string]any{
-				"signedTransactionInfo": "xxx.yyy.zzz",
-			})
+			Reply(200)
 
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
 		mockedJWTProvider.EXPECT().GetJWTToken().Return("fakeToken", nil)
@@ -37,28 +33,25 @@ func TestGetTransactionInfo(t *testing.T) {
 
 		appsService := NewInAppsService(c)
 
-		response, clientResponse, err := appsService.GetTransactionInfo(ctx, transactionID)
+		clientResponse, err := appsService.FinishTransaction(ctx, transactionID)
 		assert.NoError(t, err)
-		assert.NotNil(t, response)
 		assert.NotNil(t, clientResponse)
-
-		assert.Equal(t, common.JWSTransaction("xxx.yyy.zzz"), response.SignedTransactionInfo)
 	})
 
-	t.Run("invalid transaction id", func(t *testing.T) {
+	t.Run("transaction id not found", func(t *testing.T) {
 		defer gock.Off() // Flush pending mocks after test execution
 
 		ctx := context.Background()
 
-		transactionID := "invalidTransactionID"
+		transactionID := "missingTransactionID"
 
 		gock.New("https://api.storekit-sandbox.itunes.apple.com").
-			Get(fmt.Sprintf("/inApps/v1/transactions/%s", transactionID)).
+			Post(fmt.Sprintf("/inApps/v1/transactions/%s/finish", transactionID)).
 			MatchHeader("Authorization", "Bearer fakeToken").
-			Reply(400).
+			Reply(404).
 			JSON(map[string]any{
-				"errorCode":    4000006,
-				"errorMessage": "Invalid transaction id.",
+				"errorCode":    4040010,
+				"errorMessage": "Transaction id not found.",
 			})
 
 		mockedJWTProvider := mocks.NewIJWTProvider(t)
@@ -69,13 +62,12 @@ func TestGetTransactionInfo(t *testing.T) {
 
 		appsService := NewInAppsService(c)
 
-		response, clientResponse, err := appsService.GetTransactionInfo(ctx, transactionID)
+		clientResponse, err := appsService.FinishTransaction(ctx, transactionID)
 		responseError := client.ErrorResponse{}
 		if assert.ErrorAs(t, err, &responseError) {
 			assert.NotNil(t, responseError.Response)
-			assert.Equal(t, http.StatusBadRequest, responseError.Response.StatusCode)
+			assert.Equal(t, http.StatusNotFound, responseError.Response.StatusCode)
 		}
-		assert.Nil(t, response)
 		assert.Nil(t, clientResponse)
 	})
 }

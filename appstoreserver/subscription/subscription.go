@@ -11,6 +11,8 @@ import (
 //go:generate mockery --name ISubscriptionService
 type ISubscriptionService interface {
 	GetSubscriptionStatus(ctx context.Context, transactionId string, queryParams *GetSubscriptionStatusQuery) (*subscription.StatusResponse, *response.ClientResponse, error)
+	ExtendSubscriptionRenewalDate(ctx context.Context, originalTransactionId string, req *subscription.ExtendRenewalDateRequest) (*subscription.ExtendRenewalDateResponse, *response.ClientResponse, error)
+	MassExtendSubscriptionRenewalDates(ctx context.Context, req *subscription.MassExtendRenewalDateRequest) (*subscription.MassExtendRenewalDateResponse, *response.ClientResponse, error)
 }
 
 type SubscriptionService struct {

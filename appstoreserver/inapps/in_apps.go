@@ -12,6 +12,7 @@ import (
 type IInAppsService interface {
 	LookUpOrderID(ctx context.Context, orderID string) (*inapps.OrderLookupResponse, *response.ClientResponse, error)
 	GetTransactionInfo(ctx context.Context, transactionId string) (*inapps.TransactionInfoResponse, *response.ClientResponse, error)
+	FinishTransaction(ctx context.Context, transactionId string) (*response.ClientResponse, error)
 }
 
 type InAppsService struct {
