@@ -1,6 +1,9 @@
 package subscription
 
-import "github.com/sse-open/go-app-store-connect/appstoreserver/resource/common"
+import (
+	"github.com/sse-open/go-app-store-connect/appstoreserver/resource/common"
+	commonresource "github.com/sse-open/go-app-store-connect/common/resource"
+)
 
 // The status of an auto-renewable subscription.
 //
@@ -36,7 +39,7 @@ type SubscriptionGroupIdentifierItem struct {
 // https://developer.apple.com/documentation/appstoreserverapi/statusresponse
 type StatusResponse struct {
 	Data        []SubscriptionGroupIdentifierItem `json:"data"`
-	Environment common.Environment                `json:"environment"`
+	Environment commonresource.Environment        `json:"environment"`
 	AppAppleId  int64                             `json:"appAppleId"`
 	BundleId    string                            `json:"bundleId"`
 }

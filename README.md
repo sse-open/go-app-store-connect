@@ -4,7 +4,7 @@ go-app-store-connect is a Go library used for communicating with the Apple [App 
 
 ## Version requirement and support
 
-The library is currently written using go 1.22, and implemented to work against the, at the time of writing, latest App Store Connect API version 3.6.
+The library is currently written using go 1.25, and implemented to work against the, at the time of writing, latest App Store Connect API version 3.6.
 Parts of the API that at this time has been marked for deprecation has been omitted from the library.
 
 Currently the library only supports a subset of the API's available functionality, namely the following parts:
@@ -80,6 +80,33 @@ If an error is returned it can be inspected further by converting it to a client
             // Regular go error handling
         }
     }
+```
+
+### App Store Server Notifications
+
+The library includes payloads to be used when receiving App Store Server Notifications as well. These are located under `appstoreservernotifications`, and in addition to the payloads a common JWS verifier is provided to help with verification of the notification signed payload, and other signed JWS payloads through the api (e.g. JWSTranaction and JWSRenewalInfo). In addition to the signed payload the verifier takes a root certificate provider as input, which is used for fetching and caching the Apple root certificate used during verification. A provider implementation can be found in `common/resource/certificate/`. The verifier decodes the supplied payload, and uses the Apple root certificate which is fetched using the provider to verify the certificate chain after which it verifies the payload signature using the leaf certificates public key.
+The verifier is located in `common/resource/jws/` and is called via the package function `VerifyJWS`. All of the types that can be decoded and verified also provides a helper function `VerifyClaims` which returns the type's corresponding decoded payload.
+An example of decoding and verifying the signed payload field in a notification payload wrapper:
+```go
+    import (
+        "errors"
+
+        "github.com/sse-open/go-app-store-connect/common/resource/certificate"
+        "github.com/sse-open/go-app-store-connect/appstoreservernotifications/resource"
+    )
+
+    ...
+
+    rootCertificateProvider := certificate.NewRootCertificateProvider()
+
+	serverNotification := resource.ServerNotificationResponseBodyV2{
+		SignedPayload: "a-signed-payload",
+    }
+
+    decodedPayload, err := serverNotification.VerifySignedPayloadClaims(ctx, rootCertificateProvider)
+
+    // decodedPayload is of the type  resource.ServerNotificationV2PayloadWithClaims
+    ...
 ```
 
 ## Code Structure

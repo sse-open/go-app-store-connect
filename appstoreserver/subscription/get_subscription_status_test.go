@@ -11,6 +11,7 @@ import (
 	"github.com/sse-open/go-app-store-connect/appstoreserver/resource/subscription"
 	"github.com/sse-open/go-app-store-connect/client"
 	"github.com/sse-open/go-app-store-connect/client/mocks"
+	commonresource "github.com/sse-open/go-app-store-connect/common/resource"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -58,7 +59,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		assert.NotNil(t, response)
 		assert.NotNil(t, clientResponse)
 
-		assert.Equal(t, common.EnvironmentSandbox, response.Environment)
+		assert.Equal(t, commonresource.EnvironmentSandbox, response.Environment)
 		assert.Equal(t, int64(123456789), response.AppAppleId)
 		assert.Equal(t, "com.example.app", response.BundleId)
 		assert.Len(t, response.Data, 1)
@@ -122,7 +123,7 @@ func TestGetSubscriptionStatus(t *testing.T) {
 		assert.NotNil(t, response)
 		assert.NotNil(t, clientResponse)
 
-		assert.Equal(t, common.EnvironmentSandbox, response.Environment)
+		assert.Equal(t, commonresource.EnvironmentSandbox, response.Environment)
 		assert.Equal(t, int64(123456789), response.AppAppleId)
 		assert.Equal(t, "com.example.app", response.BundleId)
 		assert.Len(t, response.Data, 1)

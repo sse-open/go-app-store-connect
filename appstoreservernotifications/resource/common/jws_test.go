@@ -27,8 +27,8 @@ func TestJWSTransactionDecode(t *testing.T) {
 		assert.Equal(t, "11111122223333", decoded.OriginalTransactionId)
 		assert.Equal(t, "com.example.app.coolstuff", decoded.ProductId)
 		assert.Equal(t, TransactionTypeConsumable, decoded.Type)
-		assert.Equal(t, "AUD", decoded.Currency)
-		assert.Equal(t, Price(59990), decoded.Price)
+		assert.Equal(t, "AUD", *decoded.Currency)
+		assert.Equal(t, Price(59990), *decoded.Price)
 	})
 }
 
@@ -45,8 +45,8 @@ func TestJWSTransactionDecodeClaims(t *testing.T) {
 			ProductId:             "com.example.app.coolstuff",
 			BundleId:              "com.example.app",
 			Type:                  TransactionTypeConsumable,
-			Currency:              currency,
-			Price:                 price,
+			Currency:              &currency,
+			Price:                 &price,
 		}, chain.X5C(), jwt.SigningMethodES256)
 
 		jwsTransaction := JWSTransaction(signed)
@@ -59,8 +59,8 @@ func TestJWSTransactionDecodeClaims(t *testing.T) {
 		assert.Equal(t, "com.example.app.coolstuff", payload.ProductId)
 		assert.Equal(t, "com.example.app", payload.BundleId)
 		assert.Equal(t, TransactionTypeConsumable, payload.Type)
-		assert.Equal(t, "AUD", payload.Currency)
-		assert.Equal(t, Price(59990), payload.Price)
+		assert.Equal(t, "AUD", *payload.Currency)
+		assert.Equal(t, Price(59990), *payload.Price)
 	})
 
 	t.Run("propagates verification errors", func(t *testing.T) {
@@ -73,8 +73,8 @@ func TestJWSTransactionDecodeClaims(t *testing.T) {
 			ProductId:             "com.example.app.coolstuff",
 			BundleId:              "com.example.app",
 			Type:                  TransactionTypeConsumable,
-			Currency:              currency,
-			Price:                 price,
+			Currency:              &currency,
+			Price:                 &price,
 		}, chain.X5C(), jwt.SigningMethodES256)
 
 		verifier := certificate.NewRootCertificateProviderWithRootCertificateFetcher(
