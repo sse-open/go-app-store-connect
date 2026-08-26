@@ -1,6 +1,16 @@
 package resource
 
-import "github.com/google/uuid"
+import (
+	"context"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+	assncommon "github.com/sse-open/go-app-store-connect/appstoreservernotifications/resource/common"
+	"github.com/sse-open/go-app-store-connect/common"
+	commonresource "github.com/sse-open/go-app-store-connect/common/resource"
+	"github.com/sse-open/go-app-store-connect/common/resource/certificate"
+	"github.com/sse-open/go-app-store-connect/common/resource/jws"
+)
 
 // The type that describes the In-App Purchase or external purchase event for which the App Store sends the version 2 notification.
 //
@@ -67,6 +77,15 @@ type ServerNotificationResponseBodyV2 struct {
 	SignedPayload string `json:"signedPayload"`
 }
 
+func (jt ServerNotificationResponseBodyV2) VerifySignedPayloadClaims(ctx context.Context, rootCertificateProvider *certificate.RootCertificateProvider) (*ServerNotificationV2PayloadWithClaims, error) {
+	claims, err := jws.VerifyJWS[ServerNotificationV2PayloadWithClaims](ctx, rootCertificateProvider, jt.SignedPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	return &claims, nil
+}
+
 // The customer-provided reason for a refund request.
 //
 // https://developer.apple.com/documentation/appstoreservernotifications/consumptionrequestreason
@@ -97,28 +116,28 @@ var (
 //
 // https://developer.apple.com/documentation/appstoreservernotifications/data
 type NotificationData struct {
-	AppAppleID                      *int64                    `json:"appAppleId,omitempty"`
-	BundleID                        string                    `json:"bundleId"`
-	BundleVersion                   *string                   `json:"bundleVersion,omitempty"`
-	ConsumptionRequestReason        *ConsumptionRequestReason `json:"consumptionRequestReason,omitempty"`
-	Environment                     Environment               `json:"environment"`
-	SignedRenewalInfo               *string                   `json:"signedRenewalInfo,omitempty"`
-	SignedTransactionInfo           string                    `json:"signedTransactionInfo"`
-	AutoRenewableSubscriptionStatus *NotificationStatus       `json:"status,omitempty"`
+	AppAppleID                      *int64                     `json:"appAppleId,omitempty"`
+	BundleID                        string                     `json:"bundleId"`
+	BundleVersion                   *string                    `json:"bundleVersion,omitempty"`
+	ConsumptionRequestReason        *ConsumptionRequestReason  `json:"consumptionRequestReason,omitempty"`
+	Environment                     commonresource.Environment `json:"environment"`
+	SignedRenewalInfo               *assncommon.JWSRenewalInfo `json:"signedRenewalInfo,omitempty"`
+	SignedTransactionInfo           assncommon.JWSTransaction  `json:"signedTransactionInfo"`
+	AutoRenewableSubscriptionStatus *NotificationStatus        `json:"status,omitempty"`
 }
 
 // The payload data for a subscription-renewal-date extension notification.
 //
 // https://developer.apple.com/documentation/appstoreservernotifications/summary
 type NotificationSummary struct {
-	RequestIdentifier      uuid.UUID   `json:"requestIdentifier"`
-	Environment            Environment `json:"environment"`
-	AppAppleID             *int64      `json:"appAppleId,omitempty"`
-	BundleID               string      `json:"bundleId"`
-	ProductID              string      `json:"productId"`
-	StorefrontCountryCodes []string    `json:"storefrontCountryCodes,omitempty"`
-	FailedCount            *int64      `json:"failedCount,omitempty"`
-	SucceededCount         *int64      `json:"succeededCount,omitempty"`
+	RequestIdentifier      uuid.UUID                  `json:"requestIdentifier"`
+	Environment            commonresource.Environment `json:"environment"`
+	AppAppleID             *int64                     `json:"appAppleId,omitempty"`
+	BundleID               string                     `json:"bundleId"`
+	ProductID              string                     `json:"productId"`
+	StorefrontCountryCodes []string                   `json:"storefrontCountryCodes,omitempty"`
+	FailedCount            *int64                     `json:"failedCount,omitempty"`
+	SucceededCount         *int64                     `json:"succeededCount,omitempty"`
 }
 
 // The type of an external purchase custom link token.
@@ -136,10 +155,10 @@ var (
 // https://developer.apple.com/documentation/appstoreservernotifications/externalpurchasetoken
 type NotificationExternalPurchaseToken struct {
 	ExternalPurchaseID  string                     `json:"externalPurchaseId"`
-	TokenCreationDate   Timestamp                  `json:"tokenCreationDate"`
+	TokenCreationDate   common.Timestamp           `json:"tokenCreationDate"`
 	AppAppleID          int64                      `json:"appAppleId"`
 	BundleID            string                     `json:"bundleId"`
-	TokenExpirationDate *Timestamp                 `json:"tokenExpirationDate,omitempty"`
+	TokenExpirationDate *common.Timestamp          `json:"tokenExpirationDate,omitempty"`
 	TokenType           *ExternalPurchaseTokenType `json:"tokenType,omitempty"`
 }
 
@@ -147,10 +166,10 @@ type NotificationExternalPurchaseToken struct {
 //
 // https://developer.apple.com/documentation/appstoreservernotifications/appdata
 type NotificationAppData struct {
-	AppAppleID               *int64      `json:"appAppleId,omitempty"`
-	BundleID                 string      `json:"bundleId"`
-	Environment              Environment `json:"environment"`
-	SignedAppTransactionInfo string      `json:"signedAppTransactionInfo"`
+	AppAppleID               *int64                     `json:"appAppleId,omitempty"`
+	BundleID                 string                     `json:"bundleId"`
+	Environment              commonresource.Environment `json:"environment"`
+	SignedAppTransactionInfo string                     `json:"signedAppTransactionInfo"`
 }
 
 // A decoded payload that contains the version 2 notification data.
@@ -164,6 +183,11 @@ type ServerNotificationResponseBodyV2DecodedPayload struct {
 	ExternalPurchaseToken *NotificationExternalPurchaseToken `json:"externalPurchaseToken,omitempty"`
 	AppData               *NotificationAppData               `json:"appData,omitempty"`
 	Version               string                             `json:"version"`
-	SignedDate            Timestamp                          `json:"signedDate"`
+	SignedDate            common.Timestamp                   `json:"signedDate"`
 	NotificationUUID      string                             `json:"notificationUUID"`
+}
+
+type ServerNotificationV2PayloadWithClaims struct {
+	jwt.RegisteredClaims
+	ServerNotificationResponseBodyV2DecodedPayload
 }

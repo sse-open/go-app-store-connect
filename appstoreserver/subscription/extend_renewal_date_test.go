@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/h2non/gock"
-	appstoreservercommon "github.com/sse-open/go-app-store-connect/appstoreserver/common"
 	resourcesubscription "github.com/sse-open/go-app-store-connect/appstoreserver/resource/subscription"
 	"github.com/sse-open/go-app-store-connect/client"
 	"github.com/sse-open/go-app-store-connect/client/mocks"
+	"github.com/sse-open/go-app-store-connect/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -60,7 +60,7 @@ func TestExtendSubscriptionRenewalDate(t *testing.T) {
 		assert.True(t, response.Success)
 		assert.Equal(t, "230000123456789", response.WebOrderLineItemId)
 		if assert.NotNil(t, response.EffectiveDate) {
-			assert.Equal(t, appstoreservercommon.Timestamp{Time: effectiveDate}, *response.EffectiveDate)
+			assert.Equal(t, common.Timestamp{Time: effectiveDate}, *response.EffectiveDate)
 		}
 	})
 

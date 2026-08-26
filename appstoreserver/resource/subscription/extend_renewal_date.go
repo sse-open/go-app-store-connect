@@ -1,6 +1,8 @@
 package subscription
 
-import appstoreservercommon "github.com/sse-open/go-app-store-connect/appstoreserver/common"
+import (
+	"github.com/sse-open/go-app-store-connect/common"
+)
 
 // The code that represents the reason for the subscription-renewal-date extension.
 //
@@ -27,10 +29,10 @@ type ExtendRenewalDateRequest struct {
 //
 // https://developer.apple.com/documentation/appstoreserverapi/extendrenewaldateresponse
 type ExtendRenewalDateResponse struct {
-	EffectiveDate         *appstoreservercommon.Timestamp `json:"effectiveDate,omitempty"`
-	OriginalTransactionId string                          `json:"originalTransactionId"`
-	Success               bool                            `json:"success"`
-	WebOrderLineItemId    string                          `json:"webOrderLineItemId"`
+	EffectiveDate         *common.Timestamp `json:"effectiveDate,omitempty"`
+	OriginalTransactionId string            `json:"originalTransactionId"`
+	Success               bool              `json:"success"`
+	WebOrderLineItemId    string            `json:"webOrderLineItemId"`
 }
 
 // The request body that contains subscription-renewal-extension data to apply for all eligible active subscribers.
